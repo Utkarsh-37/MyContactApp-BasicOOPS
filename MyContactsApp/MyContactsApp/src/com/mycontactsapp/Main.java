@@ -1,126 +1,202 @@
 /*
-// - Use Case-3: User Profile Management
-// - User updates profile information,changes password,or manages preferences
-// - User can update city, phone number, password
+// - Use Case-4: Create Contact
+// - User adds a new contact with name, phone numbers, email addresses
+// - It uses list,LocalDateTime for timestamps, UUID for unique IDs
 // - @author Developer
-// - @version 3.0
-*/
+// - @version 4.0
+ */
 package com.mycontactsapp;
+
 import com.mycontactsapp.usermanagement.*;
-
-import java.util.Scanner;
-
+import com.mycontactsapp.contactmanagement.*;
+import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) 
-    {
+	public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
 
-        UserStore userStore = new UserStore();
-        RegistrationService regService = new RegistrationService();
-        AuthService authService = new AuthService(userStore);
-        SessionManager session = new SessionManager();
+		UserStore userStore = new UserStore();
+		RegistrationService regService = new RegistrationService();
+		AuthService authService = new AuthService(userStore);
+		SessionManager session = new SessionManager();
+		ContactStore contactStore = new ContactStore();
+		ContactService contactService = new ContactService(contactStore);
 
-        System.out.println("=== User Registration ===");
+		// ============================
+		// 1. USER REGISTRATION
+		// ============================
+		System.out.println("=== User Registration ===");
 
-        try {
-            System.out.print("Full Name: ");
-            String fullName = sc.nextLine();
+		try {
+			System.out.print("Full Name: ");
+			String fullName = sc.nextLine();
 
-            System.out.print("Email: ");
-            String email = sc.nextLine();
+			System.out.print("Email: ");
+			String email = sc.nextLine();
 
-            System.out.print("Password: ");
-            String password = sc.nextLine();
+			System.out.print("Password: ");
+			String password = sc.nextLine();
 
-            System.out.print("User Type (FREE / PREMIUM): ");
-            String type = sc.nextLine();
+			System.out.print("User Type (FREE / PREMIUM): ");
+			String type = sc.nextLine();
 
-            User user = regService.register(email, password, fullName, type);
+			User user = regService.register(email, password, fullName, type);
 
-            userStore.saveUser(user);
-            System.out.println("\nRegistration Successful!");
+			userStore.saveUser(user);
+			System.out.println("\nRegistration Successful!");
 
-        } catch (Exception e) {
-            System.out.println("Registration failed: " + e.getMessage());
-        }
+		} catch (Exception e) {
+			System.out.println("Registration failed: " + e.getMessage());
+		}
 
-        
-        System.out.println("\n=== User Login ===");
-        try {
-            System.out.print("Email: ");
-            String email = sc.nextLine();
 
-            System.out.print("Password: ");
-            String password = sc.nextLine();
+		// ============================
+		// 2. USER LOGIN
+		// ============================
+		System.out.println("\n=== User Login ===");
+		try {
+			System.out.print("Email: ");
+			String email = sc.nextLine();
 
-            User loggedUser = authService.login(email, password);
+			System.out.print("Password: ");
+			String password = sc.nextLine();
 
-            session.login(loggedUser);
+			User loggedUser = authService.login(email, password);
 
-            System.out.println("\nLogin Successful!");
-            System.out.println("Welcome, " + session.getLoggedInUser().getname());
-            System.out.println("User Type: " + session.getLoggedInUser().getUserType());
+			session.login(loggedUser);
 
-        } catch (Exception e) {
-            System.out.println("Login failed: " + e.getMessage());
-        }
-        
-        System.out.println("\n=== Profile Management ===");
+			System.out.println("\nLogin Successful!");
+			System.out.println("Welcome, " + session.getLoggedInUser().getname());
+			System.out.println("User Type: " + session.getLoggedInUser().getUserType());
 
-        ProfileService profileService = new ProfileService();
+		} catch (Exception e) {
+			System.out.println("Login failed: " + e.getMessage());
+			return; // Stop program if login fails
+		}
 
-        while (true) {
-            System.out.println("\nChoose an option:");
-            System.out.println("1. Update Name");
-            System.out.println("2. Update Email");
-            System.out.println("3. Change Password");
-            System.out.println("4. View Profile");
-            System.out.println("0. Exit");
 
-            int choice = Integer.parseInt(sc.nextLine());
+		// ============================
+		// 3. PROFILE MANAGEMENT MENU
+		// ============================
+		System.out.println("\n=== Profile Management ===");
 
-            try {
-                switch (choice) {
-                    case 1:
-                        System.out.print("Enter new name: ");
-                        profileService.updateFullName(session.getLoggedInUser(), sc.nextLine());
-                        System.out.println("Name updated.");
-                        break;
+		ProfileService profileService = new ProfileService();
 
-                    case 2:
-                        System.out.print("Enter new email: ");
-                        profileService.updateEmail(session.getLoggedInUser(), sc.nextLine());
-                        System.out.println("Email updated.");
-                        break;
+		boolean profileMenuRunning = true;
 
-                    case 3:
-                        System.out.print("Enter new password: ");
-                        profileService.changePassword(session.getLoggedInUser(), sc.nextLine());
-                        System.out.println("Password changed.");
-                        break;
+		while (profileMenuRunning) {
+			System.out.println("\nChoose an option:");
+			System.out.println("1. Update Name");
+			System.out.println("2. Update Email");
+			System.out.println("3. Change Password");
+			System.out.println("4. View Profile");
+			System.out.println("0. Continue to Contact Creation");
 
-                    case 4:
-                        User u = session.getLoggedInUser();
-                        System.out.println("\n--- Profile ---");
-                        System.out.println("Name: " + u.getname());
-                        System.out.println("Email: " + u.getEmail());
-                        System.out.println("User Type: " + u.getUserType());
-                        break;
+			int choice = Integer.parseInt(sc.nextLine());
 
-                    case 0:
-                        System.out.println("Exiting profile menu.");
-                        return;
+			try {
+				switch (choice) {
+				case 1:
+					System.out.print("Enter new name: ");
+					profileService.updateFullName(session.getLoggedInUser(), sc.nextLine());
+					System.out.println("Name updated.");
+					break;
 
-                    default:
-                        System.out.println("Invalid choice.");
-                }
+				case 2:
+					System.out.print("Enter new email: ");
+					profileService.updateEmail(session.getLoggedInUser(), sc.nextLine());
+					System.out.println("Email updated.");
+					break;
 
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        }
-    }
+				case 3:
+					System.out.print("Enter new password: ");
+					profileService.changePassword(session.getLoggedInUser(), sc.nextLine());
+					System.out.println("Password changed.");
+					break;
+
+				case 4:
+					User u = session.getLoggedInUser();
+					System.out.println("\n--- Profile ---");
+					System.out.println("Name: " + u.getname());
+					System.out.println("Email: " + u.getEmail());
+					System.out.println("User Type: " + u.getUserType());
+					break;
+
+				case 0:
+					profileMenuRunning = false; // exit loop
+					break;
+
+				default:
+					System.out.println("Invalid choice.");
+				}
+
+			} catch (Exception e) {
+				System.out.println("Error: " + e.getMessage());
+			}
+		}
+
+		boolean contactsMenuRunning = true;
+
+		while (contactsMenuRunning) {
+			System.out.println("\n=== Contacts Menu ===");
+			System.out.println("1. Create New Contact");
+			System.out.println("0. Exit Contacts Menu");
+
+			int choice = Integer.parseInt(sc.nextLine());
+
+			switch (choice) {
+			case 1:
+				System.out.println("\n=== Create Contact ===");
+				System.out.println("Choose type:");
+				System.out.println("1. Person Contact");
+				System.out.println("2. Organization Contact");
+
+				int contactType = Integer.parseInt(sc.nextLine());
+
+				System.out.print("Enter name: ");
+				String name = sc.nextLine();
+
+				System.out.print("Enter email: ");
+				String email = sc.nextLine();
+
+				// ---- phone numbers ----
+				List<PhoneNumber> phones = new ArrayList<>();
+				System.out.print("How many phone numbers? ");
+				int pc = Integer.parseInt(sc.nextLine());
+
+				for (int i = 0; i < pc; i++) {
+					System.out.print("Label (Home/Mobile/Work): ");
+					String label = sc.nextLine();
+					System.out.print("Number: ");
+					String number = sc.nextLine();
+					phones.add(new PhoneNumber(label, number));
+				}
+
+				if (contactType == 1) {
+					System.out.print("Enter birthday: ");
+					String birthday = sc.nextLine();
+
+					PersonContact p = contactService.createPersonContact(name, email, birthday, phones);
+					System.out.println("\nPerson Contact Created: " + p.getName() + " (" + p.getId() + ")");
+				}
+				else {
+					System.out.print("Enter website: ");
+					String website = sc.nextLine();
+
+					OrganizationContact o = contactService.createOrganizationContact(name, email, website, phones);
+					System.out.println("\nOrganization Contact Created: " + o.getName() + " (" + o.getId() + ")");
+				}
+				break;
+			case 0:
+				contactsMenuRunning = false;
+				continue; // exit loop
+			default:
+				System.out.println("Invalid choice.");
+			}
+		}
+
+
+	}
 }

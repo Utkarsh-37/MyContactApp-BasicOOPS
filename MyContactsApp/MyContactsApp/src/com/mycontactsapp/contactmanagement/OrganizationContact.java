@@ -1,0 +1,15 @@
+package com.mycontactsapp.contactmanagement;
+
+public class OrganizationContact extends Contact {
+
+    private String website;
+
+    public OrganizationContact(String name, String email, String website) {
+        super(name, email);
+        this.website = website;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+}
