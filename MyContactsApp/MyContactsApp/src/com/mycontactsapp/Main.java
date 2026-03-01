@@ -1,11 +1,11 @@
 /*
- // - Use Case-10: Advanced Filtering
- // - User applies multiple filters (by tag, date added, frequently contacted).
+ // - Use Case-11: Create and Manage Tags
+ // - User creates custom tags (Family, Work, Friends) for organizing contacts.
  //
- // - Implements filter based on frequently views by using a counter on the view profile function.
+ // - Implements Creating, viewing and deleting from a central list of tags.
  // 
  // - @author Developer
- // - @version 10.0
+ // - @version 11.0
  */
 package com.mycontactsapp;
 
@@ -153,6 +153,7 @@ public class Main {
 			System.out.println("5. Bulk Operations");
 			System.out.println("6. Search Contacts");
 			System.out.println("7. Advanced Filtering");
+			System.out.println("8. Manage Tags");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -546,6 +547,76 @@ public class Main {
 			    } else {
 			        System.out.println("No matching contacts found.");
 			    }
+			}
+			break;
+			// UC-11 Create and Manage Tags
+			case 8: {
+			    TagStore tagStore = new TagStore();
+
+			    boolean tagMenu = true;
+
+			    while (tagMenu) {
+			        System.out.println("\n=== Tag Management ===");
+			        System.out.println("1. Create New Tag");
+			        System.out.println("2. View All Tags");
+			        System.out.println("3. Delete Tag");
+			        System.out.println("0. Back");
+
+			        int tChoice = Integer.parseInt(sc.nextLine());
+
+			        switch (tChoice) {
+
+			            case 1:
+			                System.out.print("Enter new tag: ");
+			                try {
+			                    tagStore.addTag(sc.nextLine());
+			                    System.out.println("Tag added.");
+			                } catch (Exception e) {
+			                    System.out.println("Error: " + e.getMessage());
+			                }
+			                break;
+
+			            case 2:
+			                System.out.println("\n--- Available Tags ---");
+			                for (String tg : tagStore.getAllTags()) {
+			                    System.out.println("- " + tg);
+			                }
+			                break;
+
+			            case 3:
+			                System.out.println("\n--- Tags ---");
+			                List<String> tags = tagStore.getAllTags();
+
+			                if (tags.isEmpty()) {
+			                    System.out.println("No tags created yet.");
+			                    break;
+			                }
+
+			                for (int i = 0; i < tags.size(); i++) {
+			                    System.out.println((i + 1) + ". " + tags.get(i));
+			                }
+
+			                System.out.print("Choose tag number to delete: ");
+			                int idx = Integer.parseInt(sc.nextLine()) - 1;
+
+			                if (idx >= 0 && idx < tags.size()) {
+			                    String delTag = tags.get(idx);
+			                    tagStore.deleteTag(delTag);
+			                    System.out.println("Tag deleted.");
+			                } else {
+			                    System.out.println("Invalid selection.");
+			                }
+			                break;
+
+			            case 0:
+			                tagMenu = false;
+			                break;
+
+			            default:
+			                System.out.println("Invalid option.");
+			        }
+			    }
+
 			}
 			break;
 			case 0:
