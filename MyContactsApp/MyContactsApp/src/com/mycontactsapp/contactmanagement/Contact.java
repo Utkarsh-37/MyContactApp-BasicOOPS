@@ -32,6 +32,10 @@ public class Contact {
     public String getName() { return name; }
     public String getEmail() { return email; }
     public List<PhoneNumber> getPhoneNumbers() { return phoneNumbers; }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
     public void removePhoneNumber(int index) {
         if (index < 0 || index >= phoneNumbers.size()) {
@@ -68,6 +72,13 @@ public class Contact {
             throw new IllegalArgumentException("Tag cannot be empty.");
         }
         tags.add(tag.trim());
+    }
+    private int contactCount = 0;
+
+    public int getContactCount() { return contactCount; }
+
+    public void incrementContactCount() {
+        contactCount++;
     }
     
     @Override

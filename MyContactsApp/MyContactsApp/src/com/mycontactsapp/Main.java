@@ -1,17 +1,18 @@
 /*
- // - Use Case-9: Search Contacts
- // - User searches contacts by name, phone, email, or tags.
+ // - Use Case-10: Advanced Filtering
+ // - User applies multiple filters (by tag, date added, frequently contacted).
  //
- // - Implements search based on various parameters such as name, email, birthdate, etc.
+ // - Implements filter based on frequently views by using a counter on the view profile function.
  // 
  // - @author Developer
- // - @version 9.0
+ // - @version 10.0
  */
 package com.mycontactsapp;
 
 import com.mycontactsapp.usermanagement.*;
 import com.mycontactsapp.contactmanagement.*;
 import java.util.*;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -151,6 +152,7 @@ public class Main {
 			System.out.println("4. Delete Contact");     
 			System.out.println("5. Bulk Operations");
 			System.out.println("6. Search Contacts");
+			System.out.println("7. Advanced Filtering");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -219,6 +221,7 @@ public class Main {
 				}
 
 				Contact selected = all.get(index);
+				selected.incrementContactCount();
 				System.out.println("\n=== Contact Details ===");
 				System.out.println(selected.toString());
 			}
@@ -446,6 +449,97 @@ public class Main {
 
 			    if (!results.isEmpty()) {
 			        System.out.println("\n=== Search Results ===");
+			        for (Contact c : results) {
+			            System.out.println("- " + c.getName() + " (" + c.getId() + ")");
+			        }
+			    } else {
+			        System.out.println("No matching contacts found.");
+			    }
+			}
+			break;
+			// UC-10 ADVANCE FILTERING
+			case 7: {
+				FilterService filterService = new FilterService();
+
+				System.out.println("\n=== Advanced Filtering ===");
+				System.out.println("1. Filter by Tag");
+				System.out.println("2. Filter by Date Added (before)");
+				System.out.println("3. Filter by Frequent Contacts");
+				System.out.println("4. Combine Filters");
+				System.out.println("0. Back");
+
+				int fChoice = Integer.parseInt(sc.nextLine());
+				List<Contact> results = new ArrayList<>();
+
+				switch (fChoice) {
+
+				case 1:
+					System.out.print("Enter tag: ");
+					results = filterService.filterByTag(sc.nextLine(), contactStore);
+					break;
+
+				case 2:
+					System.out.print("Enter year (e.g. 2024): ");
+					int year = Integer.parseInt(sc.nextLine());
+
+					System.out.print("Enter month: ");
+					int month = Integer.parseInt(sc.nextLine());
+
+					System.out.print("Enter day: ");
+					int day = Integer.parseInt(sc.nextLine());
+
+					results = filterService.filterByDateBefore(
+							LocalDateTime.of(year, month, day, 0, 0),
+							contactStore);
+					break;
+
+				case 3:
+					System.out.print("Enter minimum contact count: ");
+					int minCount = Integer.parseInt(sc.nextLine());
+					results = filterService.filterByMinContactCount(minCount, contactStore);
+					break;
+
+				case 4:
+					// COLLECT MULTIPLE FILTERS
+					System.out.print("Tag (leave blank to skip): ");
+					String tag = sc.nextLine();
+					List<Contact> f1 = tag.isEmpty() ? contactStore.getAll()
+							: filterService.filterByTag(tag, contactStore);
+
+					System.out.print("Filter by date? (YES/NO): ");
+					String d = sc.nextLine();
+					List<Contact> f2 = null;
+					if (d.equalsIgnoreCase("YES")) {
+						System.out.print("Enter year: ");
+						int y = Integer.parseInt(sc.nextLine());
+						System.out.print("Enter month: ");
+						int m = Integer.parseInt(sc.nextLine());
+						System.out.print("Enter day: ");
+						int day2 = Integer.parseInt(sc.nextLine());
+						f2 = filterService.filterByDateBefore(
+								LocalDateTime.of(y, m, day2, 0, 0), contactStore);
+					}
+
+					System.out.print("Minimum contact count (blank to skip): ");
+					String cc = sc.nextLine();
+					List<Contact> f3 = null;
+					if (!cc.isEmpty()) {
+						f3 = filterService.filterByMinContactCount(Integer.parseInt(cc), contactStore);
+					}
+
+					results = filterService.combineFilters(f1, f2, f3);
+					break;
+
+			        case 0:
+			            break;
+
+			        default:
+			            System.out.println("Invalid option.");
+			    }
+
+			    // SHOW RESULTS
+			    if (!results.isEmpty()) {
+			        System.out.println("\n=== Filter Results ===");
 			        for (Contact c : results) {
 			            System.out.println("- " + c.getName() + " (" + c.getId() + ")");
 			        }
