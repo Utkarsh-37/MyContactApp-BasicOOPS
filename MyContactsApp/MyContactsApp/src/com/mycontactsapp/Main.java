@@ -1,11 +1,9 @@
 /*
- // - Use Case-11: Create and Manage Tags
- // - User creates custom tags (Family, Work, Friends) for organizing contacts.
- //
- // - Implements Creating, viewing and deleting from a central list of tags.
+ // - Use Case-12: Apply Tags to Contacts
+ // - User assigns one or multiple tags to contacts.
  // 
  // - @author Developer
- // - @version 11.0
+ // - @version 12.0
  */
 package com.mycontactsapp;
 
@@ -26,6 +24,7 @@ public class Main {
 		SessionManager session = new SessionManager();
 		ContactStore contactStore = new ContactStore();
 		ContactService contactService = new ContactService(contactStore);
+		TagStore tagStore = new TagStore();
 
 		// ============================
 				// 1. USER REGISTRATION
@@ -154,6 +153,7 @@ public class Main {
 			System.out.println("6. Search Contacts");
 			System.out.println("7. Advanced Filtering");
 			System.out.println("8. Manage Tags");
+			System.out.println("9. Apply Tags to Contact");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -551,8 +551,6 @@ public class Main {
 			break;
 			// UC-11 Create and Manage Tags
 			case 8: {
-			    TagStore tagStore = new TagStore();
-
 			    boolean tagMenu = true;
 
 			    while (tagMenu) {
@@ -610,6 +608,120 @@ public class Main {
 
 			            case 0:
 			                tagMenu = false;
+			                break;
+
+			            default:
+			                System.out.println("Invalid option.");
+			        }
+			    }
+
+			}
+			break;
+			// UC-12 Apply Tags to Contacts
+			case 9: {
+			    if (contactStore.getAll().isEmpty()) {
+			        System.out.println("No contacts available.");
+			        break;
+			    }
+
+			    // Ask user to pick a contact
+			    System.out.println("\n=== Select Contact ===");
+			    List<Contact> all = contactStore.getAll();
+			    for (int i = 0; i < all.size(); i++) {
+			        System.out.println((i + 1) + ". " + all.get(i).getName());
+			    }
+
+			    System.out.print("Enter contact number: ");
+			    int contactIndex = Integer.parseInt(sc.nextLine()) - 1;
+
+			    if (contactIndex < 0 || contactIndex >= all.size()) {
+			        System.out.println("Invalid selection.");
+			        break;
+			    }
+
+			    Contact selectedContact = all.get(contactIndex);
+
+			    boolean taggingMenu = true;
+			    while (taggingMenu) {
+
+			        System.out.println("\n=== Tagging Menu ===");
+			        System.out.println("1. Add Tag");
+			        System.out.println("2. Remove Tag");
+			        System.out.println("3. View Tags");
+			        System.out.println("0. Back");
+
+			        int tCh = Integer.parseInt(sc.nextLine());
+
+			        switch (tCh) {
+
+			            case 1: {   // Add a tag to this contact
+			                List<String> tags = tagStore.getAllTags();
+
+			                if (tags.isEmpty()) {
+			                    System.out.println("No tags available. Create tags first.");
+			                    break;
+			                }
+
+			                System.out.println("\n--- Available Tags ---");
+			                for (int i = 0; i < tags.size(); i++) {
+			                    System.out.println((i + 1) + ". " + tags.get(i));
+			                }
+
+			                System.out.print("Choose tag number to apply: ");
+			                int tagIdx = Integer.parseInt(sc.nextLine()) - 1;
+
+			                if (tagIdx < 0 || tagIdx >= tags.size()) {
+			                    System.out.println("Invalid selection.");
+			                    break;
+			                }
+
+			                selectedContact.addTag(tags.get(tagIdx));
+			                System.out.println("Tag applied.");
+			                break;
+			            }
+
+			            case 2: {   // Remove tag
+			                List<String> appliedTags = selectedContact.getTags();
+
+			                if (appliedTags.isEmpty()) {
+			                    System.out.println("This contact has no tags.");
+			                    break;
+			                }
+
+			                System.out.println("\n--- Contact's Tags ---");
+			                for (int i = 0; i < appliedTags.size(); i++) {
+			                    System.out.println((i + 1) + ". " + appliedTags.get(i));
+			                }
+
+			                System.out.print("Select tag number to remove: ");
+			                int rmIdx = Integer.parseInt(sc.nextLine()) - 1;
+
+			                if (rmIdx < 0 || rmIdx >= appliedTags.size()) {
+			                    System.out.println("Invalid selection.");
+			                    break;
+			                }
+
+			                appliedTags.remove(rmIdx);
+			                System.out.println("Tag removed.");
+			                break;
+			            }
+
+			            case 3: {   // View tags
+			                List<String> appliedTags = selectedContact.getTags();
+
+			                System.out.println("\n--- Tags for Contact ---");
+			                if (appliedTags.isEmpty()) {
+			                    System.out.println("(No tags assigned)");
+			                } else {
+			                    for (String tg : appliedTags) {
+			                        System.out.println("- " + tg);
+			                    }
+			                }
+			                break;
+			            }
+
+			            case 0:
+			                taggingMenu = false;
 			                break;
 
 			            default:
