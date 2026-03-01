@@ -1,13 +1,13 @@
 /*
-// - Use Case-5: View Contact Details
-// - User views complete information of a specific contact.
-// 
-// - Use specific user's UUID or #(the serial number/ index) to access the specific details
-/// 
-// - @author Developer
-// - @version 5.0
-//
- */
+ // - Use Case-6: Edit Contact
+ // - User modifies existing contact information.
+ //
+ // - Logged-in user selects a contact (by UUID or index) and updates name, phone, or email.
+ // - Validation is applied via setters; changes are saved by replacing the original with the edited copy.
+ // 
+ // - @author Developer
+ // - @version 6.0
+*/
 package com.mycontactsapp;
 
 import com.mycontactsapp.usermanagement.*;
