@@ -1,3 +1,11 @@
+/*
+// - Use Case-1: User Registartion
+// - User creates an account with email, password, and profile information
+// - Input is validated
+// - If it is a success user details are displayed
+// - @author Developer
+// - @version 1.0
+*/
 package com.mycontactsapp;
 import com.mycontactsapp.usermanagement.*;
 
