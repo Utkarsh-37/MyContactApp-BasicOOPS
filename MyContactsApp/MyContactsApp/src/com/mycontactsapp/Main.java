@@ -1,11 +1,11 @@
 /*
- // - Use Case-8: Bulk Operations
- // - User performs operations on multiple contacts (delete, tag, export).
+ // - Use Case-9: Search Contacts
+ // - User searches contacts by name, phone, email, or tags.
  //
- // - Implements bulk operations; updates the in-memory list immediately.
+ // - Implements search based on various parameters such as name, email, birthdate, etc.
  // 
  // - @author Developer
- // - @version 8.0
+ // - @version 9.0
  */
 package com.mycontactsapp;
 
@@ -138,7 +138,7 @@ public class Main {
 
 
 		// ============================
-		// CONTACT MANAGEMENT (UC4–UC7)
+		// CONTACT MANAGEMENT (UC4–UC9)
 		// ============================
 
 		boolean contactsMenuRunning = true;
@@ -150,6 +150,7 @@ public class Main {
 			System.out.println("3. Edit Contact");
 			System.out.println("4. Delete Contact");     
 			System.out.println("5. Bulk Operations");
+			System.out.println("6. Search Contacts");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -364,7 +365,7 @@ public class Main {
 				}
 			}
 			break;
-
+			// UC-08 BULK OPERATIONS
 			case 5: {
 				boolean bulkMenu = true;
 
@@ -398,6 +399,59 @@ public class Main {
 						System.out.println("Invalid option.");
 					}
 				}
+			}
+			break;
+			// UC-09 SEARCH CONTACTS
+			case 6: {
+			    SearchService searchService = new SearchService();
+
+			    System.out.println("\n=== Search Contacts ===");
+			    System.out.println("1. Search by Name");
+			    System.out.println("2. Search by Email");
+			    System.out.println("3. Search by Phone");
+			    System.out.println("4. Search by Tag");
+			    System.out.println("0. Back");
+
+			    int searchChoice = Integer.parseInt(sc.nextLine());
+
+			    List<Contact> results = new ArrayList<>();
+
+			    switch (searchChoice) {
+			        case 1:
+			            System.out.print("Enter name keyword: ");
+			            results = searchService.searchByName(sc.nextLine(), contactStore);
+			            break;
+
+			        case 2:
+			            System.out.print("Enter email: ");
+			            results = searchService.searchByEmail(sc.nextLine(), contactStore);
+			            break;
+
+			        case 3:
+			            System.out.print("Enter phone number: ");
+			            results = searchService.searchByPhone(sc.nextLine(), contactStore);
+			            break;
+
+			        case 4:
+			            System.out.print("Enter tag: ");
+			            results = searchService.searchByTag(sc.nextLine(), contactStore);
+			            break;
+
+			        case 0:
+			            break;
+
+			        default:
+			            System.out.println("Invalid option.");
+			    }
+
+			    if (!results.isEmpty()) {
+			        System.out.println("\n=== Search Results ===");
+			        for (Contact c : results) {
+			            System.out.println("- " + c.getName() + " (" + c.getId() + ")");
+			        }
+			    } else {
+			        System.out.println("No matching contacts found.");
+			    }
 			}
 			break;
 			case 0:
