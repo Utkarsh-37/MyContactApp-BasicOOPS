@@ -33,8 +33,29 @@ public class Contact {
     public String getEmail() { return email; }
     public List<PhoneNumber> getPhoneNumbers() { return phoneNumbers; }
 
-    public void addPhoneNumber(PhoneNumber p) {
-        phoneNumbers.add(p);
+    public void removePhoneNumber(int index) {
+        if (index < 0 || index >= phoneNumbers.size()) {
+            throw new IllegalArgumentException("Invalid phone index.");
+        }
+        phoneNumbers.remove(index);
+    }
+
+    public void addPhoneNumber(PhoneNumber phone) {
+        phoneNumbers.add(phone);
+    }
+    
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty.");
+        }
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        if (!EmailValidator.isValid(email)) {
+            throw new IllegalArgumentException("Invalid email.");
+        }
+        this.email = email;
     }
     
     @Override
@@ -54,4 +75,6 @@ public class Contact {
 
         return sb.toString();
     }
+    
+    
 }

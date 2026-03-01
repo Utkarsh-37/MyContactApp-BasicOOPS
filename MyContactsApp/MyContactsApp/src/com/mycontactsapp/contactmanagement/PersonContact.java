@@ -12,6 +12,9 @@ public class PersonContact extends Contact {
     public String getBirthday() {
         return birthday;
     }
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;  // keep simple
+    }
     
     @Override
     public String toString() {

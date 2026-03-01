@@ -7,7 +7,7 @@
 // - @author Developer
 // - @version 5.0
 //
-*/
+ */
 package com.mycontactsapp;
 
 import com.mycontactsapp.usermanagement.*;
@@ -139,7 +139,7 @@ public class Main {
 				System.out.println("Error: " + e.getMessage());
 			}
 		}
-		
+
 		// ============================
 		// Contact Management (UC4, UC5)
 		// ============================
@@ -150,6 +150,7 @@ public class Main {
 			System.out.println("\n=== Contacts Menu ===");
 			System.out.println("1. Create New Contact");
 			System.out.println("2. View Contact Details");
+			System.out.println("3. Edit Contact");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -222,6 +223,114 @@ public class Main {
 
 				System.out.println("\n=== Contact Details ===");
 				System.out.println(selected.toString());
+				break;
+			case 3:
+				List<Contact> allContacts = contactStore.getAll();
+
+				if (allContacts.isEmpty()) {
+					System.out.println("No contacts to edit.");
+					break;
+				}
+
+				System.out.println("\n=== Select Contact to Edit ===");
+				for (int i = 0; i < allContacts.size(); i++) {
+					System.out.println((i + 1) + ". " + allContacts.get(i).getName());
+				}
+
+				System.out.print("Enter number: ");
+				int idx = Integer.parseInt(sc.nextLine()) - 1;
+
+				if (idx < 0 || idx >= allContacts.size()) {
+					System.out.println("Invalid selection.");
+					break;
+				}
+
+				Contact contact = allContacts.get(idx);
+				boolean editing = true;
+
+				while (editing) {
+					System.out.println("\n=== Edit Menu ===");
+					System.out.println("1. Edit Name");
+					System.out.println("2. Edit Email");
+					System.out.println("3. Add Phone Number");
+					System.out.println("4. Remove Phone Number");
+
+					// Person vs Organization options
+					if (contact instanceof PersonContact) {
+						System.out.println("5. Edit Birthday");
+					} else {
+						System.out.println("5. Edit Website");
+					}
+
+					System.out.println("0. Done Editing");
+
+					int choice2 = Integer.parseInt(sc.nextLine());
+
+					try {
+						switch (choice2) {
+						case 1:
+							System.out.print("Enter new name: ");
+							contact.setName(sc.nextLine());
+							System.out.println("Name updated.");
+							break;
+
+						case 2:
+							System.out.print("Enter new email: ");
+							contact.setEmail(sc.nextLine());
+							System.out.println("Email updated.");
+							break;
+
+						case 3:
+							System.out.print("Label: ");
+							String label = sc.nextLine();
+							System.out.print("Number: ");
+							String num = sc.nextLine();
+							contact.addPhoneNumber(new PhoneNumber(label, num));
+							System.out.println("Phone added.");
+							break;
+
+						case 4:
+							List<PhoneNumber> phs = contact.getPhoneNumbers();
+							if (phs.isEmpty()) {
+								System.out.println("No phone numbers to remove.");
+								break;
+							}
+							for (int i = 0; i < phs.size(); i++) {
+								System.out.println((i + 1) + ". " +
+										phs.get(i).getLabel() + ":" + phs.get(i).getNumber());
+							}
+							System.out.print("Remove which? ");
+							int removeIdx = Integer.parseInt(sc.nextLine()) - 1;
+							contact.removePhoneNumber(removeIdx);
+							System.out.println("Phone removed.");
+							break;
+
+						case 5:
+							if (contact instanceof PersonContact pco) {
+								System.out.print("Enter new birthday: ");
+								pco.setBirthday(sc.nextLine());
+								System.out.println("Birthday updated.");
+							} else {
+								OrganizationContact oc = (OrganizationContact) contact;
+								System.out.print("Enter new website: ");
+								oc.setWebsite(sc.nextLine());
+								System.out.println("Website updated.");
+							}
+							break;
+
+						case 0:
+							editing = false;
+							break;
+
+						default:
+							System.out.println("Invalid option.");
+						}
+
+					} catch (Exception e) {
+						System.out.println("Error: " + e.getMessage());
+					}
+				}
+
 				break;
 			case 0:
 				contactsMenuRunning = false;
