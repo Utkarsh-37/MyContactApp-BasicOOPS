@@ -36,4 +36,22 @@ public class Contact {
     public void addPhoneNumber(PhoneNumber p) {
         phoneNumbers.add(p);
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Contact ID: ").append(id).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Email: ").append(email).append("\n");
+        sb.append("Phone Numbers:\n");
+
+        for (PhoneNumber p : phoneNumbers) {
+            sb.append("  - ").append(p.getLabel())
+              .append(": ").append(p.getNumber()).append("\n");
+        }
+
+        sb.append("Created At: ").append(createdAt).append("\n");
+
+        return sb.toString();
+    }
 }

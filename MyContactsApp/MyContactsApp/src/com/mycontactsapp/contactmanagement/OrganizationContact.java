@@ -12,4 +12,10 @@ public class OrganizationContact extends Contact {
     public String getWebsite() {
         return website;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() +
+               "Website: " + website + "\n";
+    }
 }

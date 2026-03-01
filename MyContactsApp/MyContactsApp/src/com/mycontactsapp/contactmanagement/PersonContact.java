@@ -12,4 +12,10 @@ public class PersonContact extends Contact {
     public String getBirthday() {
         return birthday;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() +
+               "Birthday: " + birthday + "\n";
+    }
 }

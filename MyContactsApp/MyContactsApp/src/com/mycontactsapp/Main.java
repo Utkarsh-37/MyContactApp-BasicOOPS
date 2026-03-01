@@ -1,10 +1,13 @@
 /*
-// - Use Case-4: Create Contact
-// - User adds a new contact with name, phone numbers, email addresses
-// - It uses list,LocalDateTime for timestamps, UUID for unique IDs
+// - Use Case-5: View Contact Details
+// - User views complete information of a specific contact.
+// 
+// - Use specific user's UUID or #(the serial number/ index) to access the specific details
+/// 
 // - @author Developer
-// - @version 4.0
- */
+// - @version 5.0
+//
+*/
 package com.mycontactsapp;
 
 import com.mycontactsapp.usermanagement.*;
@@ -136,12 +139,17 @@ public class Main {
 				System.out.println("Error: " + e.getMessage());
 			}
 		}
+		
+		// ============================
+		// Contact Management (UC4, UC5)
+		// ============================
 
 		boolean contactsMenuRunning = true;
 
 		while (contactsMenuRunning) {
 			System.out.println("\n=== Contacts Menu ===");
 			System.out.println("1. Create New Contact");
+			System.out.println("2. View Contact Details");
 			System.out.println("0. Exit Contacts Menu");
 
 			int choice = Integer.parseInt(sc.nextLine());
@@ -188,6 +196,32 @@ public class Main {
 					OrganizationContact o = contactService.createOrganizationContact(name, email, website, phones);
 					System.out.println("\nOrganization Contact Created: " + o.getName() + " (" + o.getId() + ")");
 				}
+				break;
+			case 2:
+				List<Contact> all = contactStore.getAll();
+
+				if (all.isEmpty()) {
+					System.out.println("No contacts available.");
+					break;
+				}
+
+				System.out.println("\n=== Contact List ===");
+				for (int i = 0; i < all.size(); i++) {
+					System.out.println((i + 1) + ". " + all.get(i).getName());
+				}
+
+				System.out.print("Choose contact #: ");
+				int index = Integer.parseInt(sc.nextLine()) - 1;
+
+				if (index < 0 || index >= all.size()) {
+					System.out.println("Invalid selection.");
+					break;
+				}
+
+				Contact selected = all.get(index);
+
+				System.out.println("\n=== Contact Details ===");
+				System.out.println(selected.toString());
 				break;
 			case 0:
 				contactsMenuRunning = false;
