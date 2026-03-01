@@ -25,4 +25,7 @@ public class User
 	public String getUserType() {
 		return userType; 
 	}
+	public String getPasswordHash() {
+	    return passwordHash;
+	}
 }
