@@ -57,6 +57,18 @@ public class Contact {
         }
         this.email = email;
     }
+    private List<String> tags = new ArrayList<>();
+
+    public List<String> getTags() { 
+        return tags; 
+    }
+
+    public void addTag(String tag) {
+        if (tag == null || tag.trim().isEmpty()) {
+            throw new IllegalArgumentException("Tag cannot be empty.");
+        }
+        tags.add(tag.trim());
+    }
     
     @Override
     public String toString() {
