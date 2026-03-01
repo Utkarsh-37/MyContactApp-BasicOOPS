@@ -1,10 +1,9 @@
 /*
-// - Use Case-2: User Authentication
-// - User logs in with credentials to access their contact list
-// - Password is hashed using MessageDigest (SHA-256)
-// - User can select to login using BasicAuth or OAuth
+// - Use Case-3: User Profile Management
+// - User updates profile information,changes password,or manages preferences
+// - User can update city, phone number, password
 // - @author Developer
-// - @version 2.0
+// - @version 3.0
 */
 package com.mycontactsapp;
 import com.mycontactsapp.usermanagement.*;
@@ -67,6 +66,61 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Login failed: " + e.getMessage());
+        }
+        
+        System.out.println("\n=== Profile Management ===");
+
+        ProfileService profileService = new ProfileService();
+
+        while (true) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Update Name");
+            System.out.println("2. Update Email");
+            System.out.println("3. Change Password");
+            System.out.println("4. View Profile");
+            System.out.println("0. Exit");
+
+            int choice = Integer.parseInt(sc.nextLine());
+
+            try {
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter new name: ");
+                        profileService.updateFullName(session.getLoggedInUser(), sc.nextLine());
+                        System.out.println("Name updated.");
+                        break;
+
+                    case 2:
+                        System.out.print("Enter new email: ");
+                        profileService.updateEmail(session.getLoggedInUser(), sc.nextLine());
+                        System.out.println("Email updated.");
+                        break;
+
+                    case 3:
+                        System.out.print("Enter new password: ");
+                        profileService.changePassword(session.getLoggedInUser(), sc.nextLine());
+                        System.out.println("Password changed.");
+                        break;
+
+                    case 4:
+                        User u = session.getLoggedInUser();
+                        System.out.println("\n--- Profile ---");
+                        System.out.println("Name: " + u.getname());
+                        System.out.println("Email: " + u.getEmail());
+                        System.out.println("User Type: " + u.getUserType());
+                        break;
+
+                    case 0:
+                        System.out.println("Exiting profile menu.");
+                        return;
+
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
 }
