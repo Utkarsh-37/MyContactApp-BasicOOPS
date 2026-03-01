@@ -14,4 +14,8 @@ public class ContactStore {
     public List<Contact> getAll() {
         return contacts;
     }
+    
+    public void delete(Contact contact) {
+        contacts.remove(contact);
+    }
 }
